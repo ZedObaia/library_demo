@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+Author
+{% endblock title %}
+{% block content %}
+<div class="jumbotron">
+  <h1 class="display-4">{{object.first_name}} {{object.last_name}}</h1>
+  <p class="lead">{{object.bio}}</p>
+  <hr class="my-4">
+  {% if request.user.is_staff %}
+    <a class="btn btn-info btn-lg" href="{% url 'books:author_update' object.pk %}" role="button">Edit</a>
+    <a class="btn btn-danger btn-lg" href="{% url 'books:author_delete' object.pk %}" role="button">Delete</a>
+  {% endif %}
+</div>
+{% endblock content %}

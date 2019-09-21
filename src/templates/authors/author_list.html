@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if request.user.is_staff %}
+<a class="btn btn-lg btn-primary" href="{% url 'books:author_add' %}">Add Author</a>
+<br><br>
+{% endif %}
+<ul class="list-group">
+{% for author in object_list %}
+
+  <li class="list-group-item">
+  <h2>{{author.first_name}} {{author.last_name}}</h2>
+  <p>{{author.bio}}</p>
+  <div class='float-right'>
+  <a class="btn btn-primary" href="{% url 'books:author_detail' author.pk %}">View Details</a>
+  {% if request.user.is_staff %}
+  <a class="btn btn-info" href="{% url 'books:author_update' author.pk %}">Edit</a>  
+  {% endif %}
+  </div>
+</li>
+
+{% endfor %}
+</ul>
+{% endblock content %}

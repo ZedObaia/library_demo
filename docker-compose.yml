@@ -1,0 +1,40 @@
+version : '3'
+services :
+  db :
+    image : zedobaia/library_demo_db
+    build: ./docker/postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file: ./docker/postgres/.env
+    restart : always
+  web:
+    image : zedobaia/library_demo
+    build:
+      context: .
+      dockerfile : ./docker/web/Dockerfile
+    depends_on:
+      - db
+    expose:
+      - 8000
+    env_file: ./docker/web/.env
+    volumes:
+      - ./src:/home/app
+      - static_volume:/home/app/static_cdn
+      - media_volume:/home/app/media_cdn
+    restart : always
+    command : bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn  library.wsgi -b 0.0.0.0:8000 --reload"
+
+  nginx:
+    build: ./docker/nginx
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/home/app/static_cdn
+      - media_volume:/home/app/media_cdn
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

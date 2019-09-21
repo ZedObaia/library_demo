@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if request.user.is_staff %}
+<a href="{% url 'books:category_add' %}" class="btn btn-lg btn-primary">Add Category</a><br><br>  
+{% endif %}
+<ul class="list-group">
+    {% for category in object_list %}
+    <li class="list-group-item">
+    <h2>{{category.name}}</h2>
+    <p>{{category.description}}</p>
+    {% if request.user.is_staff %}
+        <div class=float-left>
+
+        <a href="{% url 'books:category_update' category.pk %}" class="btn btn-lg btn-info">Edit</a>
+        <a class="btn btn-danger btn-lg" href="{% url 'books:category_delete' category.pk %}" role="button">Delete</a>
+        </div>
+    {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock content %}

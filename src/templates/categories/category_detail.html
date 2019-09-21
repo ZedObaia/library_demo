@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>
+<div class="jumbotron">
+  <h1 class="display-4">{{object.name}}</h1>
+  <p class="lead">{{object.description}}</p>
+  <hr class="my-4">
+  <a class="btn btn-danger btn-lg" href="{% url 'books:category_delete' object.pk %}" role="button">Delete</a>
+</div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="jumbotron">
+  <h1 class="display-4">Are you sure?</h1>
+  <p class="lead">This action will delete this category and all books associated with it !<br>
+    Not only that, It will also delete all reviews associated with those books
+  </p>
+  <hr class="my-4">
+<form method="POST"> {% csrf_token %}
+  <input type="submit" class="btn btn-danger btn-lg" href="#" role="button" value="I understand the risk">
+  <a class="btn btn-primary btn-lg" href="{% url 'books:category_detail' object.pk %}" role="button">Take me back</a>
+</form>
+
+</div>
+{% endblock content %}

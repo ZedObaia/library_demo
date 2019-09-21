@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="Library" id="Project_2eb7cda" template="Default" database="PostgreSQL" >
+	<schema name="library" schemaname="library" >
+		<table name="author" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="first_name" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="last_name" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="bio" type="text" jt="12" />
+			<index name="pk_author_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_author_book_author" to_schema="library" to_table="book_author" delete_action="cascade" >
+				<fk_column name="id" pk="author_id" />
+			</fk>
+		</table>
+		<table name="book" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="title" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="description" type="text" jt="12" />
+			<column name="cover" type="path" jt="1111" />
+			<column name="publication_date" type="date" jt="91" />
+			<column name="category_id" type="integer" jt="4" />
+			<index name="pk_book_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="fk_book_category" to_schema="library" to_table="category" delete_action="setNull" >
+				<fk_column name="category_id" pk="id" />
+			</fk>
+			<fk name="fk_book_read_book" to_schema="library" to_table="read_book" delete_action="cascade" >
+				<fk_column name="id" pk="book_id" />
+			</fk>
+		</table>
+		<table name="book_author" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="book_id" type="integer" jt="4" mandatory="y" />
+			<column name="author_id" type="integer" jt="4" mandatory="y" />
+			<index name="pk_book_author_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="unq_book_author_author_id" unique="UNIQUE" >
+				<column name="author_id" />
+			</index>
+			<fk name="fk_book_author_book" to_schema="library" to_table="book" delete_action="cascade" >
+				<fk_column name="id" pk="id" />
+			</fk>
+		</table>
+		<table name="category" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="name" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="description" type="text" jt="12" />
+			<index name="pk_category_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="read_book" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="user_id" type="integer" jt="4" mandatory="y" />
+			<column name="book_id" type="integer" jt="4" mandatory="y" />
+			<index name="pk_read_book_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_read_book" unique="UNIQUE" >
+				<column name="user_id" />
+				<column name="book_id" />
+			</index>
+			<index name="unq_read_book_book_id" unique="UNIQUE" >
+				<column name="book_id" />
+			</index>
+			<fk name="fk_read_book_user" to_schema="library" to_table="user" delete_action="cascade" >
+				<fk_column name="user_id" pk="id" />
+			</fk>
+		</table>
+		<table name="review" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="text" type="text" length="250" jt="12" mandatory="y" />
+			<column name="user_id" type="integer" jt="4" mandatory="y" />
+			<column name="book_id" type="integer" jt="4" mandatory="y" />
+			<index name="pk_review_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<index name="idx_review" unique="UNIQUE" >
+				<column name="user_id" />
+				<column name="book_id" />
+			</index>
+			<fk name="fk_review_book" to_schema="library" to_table="book" delete_action="cascade" >
+				<fk_column name="book_id" pk="id" />
+			</fk>
+			<fk name="fk_review_user" to_schema="library" to_table="user" >
+				<fk_column name="user_id" pk="id" />
+			</fk>
+		</table>
+		<table name="table" />
+		<table name="user" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="first_name" type="varchar" length="255" jt="12" />
+			<column name="last_name" type="varchar" length="255" jt="12" />
+			<column name="email" type="varchar" length="255" jt="12" mandatory="y" />
+			<column name="username" type="varchar" length="255" jt="12" mandatory="y" />
+			<index name="pk_table_0_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+	</schema>
+	<layout name="Default Layout" id="Layout_29143" show_column_type="y" show_relation="columns" >
+		<entity schema="library" name="category" color="C1D8EE" x="80" y="256" />
+		<entity schema="library" name="user" color="C1D8EE" x="624" y="192" />
+		<entity schema="library" name="author" color="C1D8EE" x="48" y="448" />
+		<entity schema="library" name="book_author" color="C1D8EE" x="336" y="416" />
+		<entity schema="library" name="review" color="C1D8EE" x="640" y="368" />
+		<entity schema="library" name="read_book" color="C1D8EE" x="464" y="48" />
+		<entity schema="library" name="book" color="C1D8EE" x="320" y="208" />
+	</layout>
+</project>

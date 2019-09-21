@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}
+Book
+{% endblock title %}
+{% block content %}
+
+<div class="card">
+    {% if object.cover %}
+    <img src="{{object.cover.url}}" class="card-img-top img-responsive" alt="No image available">
+
+    {% else %}
+
+    <img src="https://picsum.photos/288/434/"  class="card-img-top img-responsive" alt="No image available">
+
+    {% endif %}
+    <div class="card-body">
+        <h5 class="card-title">{{object.title}}</h5>
+        <p class="card-text">{{object.description}}</p>
+        {% if request.user.is_staff %}
+        <a href="{% url 'books:book_update' book.pk %}" class="btn btn-info">Edit</a>
+        <a href="{% url 'books:book_delete' book.pk %}" class="btn btn-danger">Delete</a>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <span class="float-right">
+            {% if read_by_me %}
+            <form method="POST" action="{% url 'books:toggle_read' object.id %}">{% csrf_token %}
+                <i class="fas fa-check-double" style="color:rgb(54, 219, 90)"></i>
+                <input type="submit" class="btn btn-warning" value="Mark Unread">
+            </form>
+            {% else %}
+            <form method="POST" action="{% url 'books:toggle_read' object.id %}">{% csrf_token %}
+
+                <i class="fas fa-check" style="color:rgb(97, 97, 97)"></i>
+                <input type="submit" class="btn btn-success" value="Mark Read">
+            </form>
+            {% endif %}
+        </span>
+        {% endif %}
+        <br><br>
+        {% if object.authors.all %}
+        <h4> Authors:</h4>
+        {% for author in object.authors.all %}
+        <a type="button" class="btn btn-secondary" href="{% url 'books:author_detail' author.pk%}">
+            {{author.first_name}}
+            {{author.last_name}}
+        </a>
+        {% endfor %}
+        {% endif %}
+        <br><br>
+        <h4>{{reviews.count}} Reviews:</h4>
+        <div class="card-footer">
+            {% if newReview %}
+            <form method="post">{% csrf_token %}
+                {{form | crispy}}
+                <input type="submit" class="btn btn-primary" value="Save">
+            </form>
+            <hr>
+            {% endif %}
+            {% if mine %}
+            <div class="card md12 lg12 sm12">
+                <div class="card-body">
+                    <p class="card-text">{{mine.text}}
+                        <a type="button" class="btn btn-danger float-right" data-toggle="modal"
+                            data-target="#deleteReviewModal">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                        &nbsp;&nbsp;
+                        <a type="button" class="btn btn-info float-right" data-toggle="modal"
+                            data-target="#updateReviewModal">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                    </p>
+                    <!-- Delete Modal -->
+                    <div class="modal" tabindex="-1" role="dialog" id="deleteReviewModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Delete Review</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Are you sure you want to delete your review ?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <form method="post" action="{% url 'reviews:review_delete' mine.id %}">
+                                        {% csrf_token %}
+                                        <input class="btn btn-danger float-right" type="submit" value="Delete">
+                                    </form>
+
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end delete modal -->
+
+                    <div class="modal" tabindex="-1" role="dialog" id="updateReviewModal">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Delete Review</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{form | crispy}}
+                                </div>
+                                <div class="modal-footer">
+
+                                    <input class="btn btn-success float-right" type="submit" value="Save">
+
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted"> <b>{{mine.timestamp | timesince}} </b> ago </small>
+                </div>
+            </div>
+            <br>
+
+
+            {% endif %}
+            {% for review in  reviews%}
+            <div class="card md12 lg12 sm12">
+                <div class="card-body">
+                    <p class="card-text">{{review.text}}
+                    </p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted"> <b>{{review.timestamp | timesince}} </b> ago by
+                        <i>{{review.user.username}}</i></small>
+                </div>
+            </div>
+            <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

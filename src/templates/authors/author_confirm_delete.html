@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="jumbotron">
+  <h1 class="display-4">Are you sure?</h1>
+  <p class="lead">
+  This action will delete this author, it will also delete his/her association with all of his/her books
+  </p><br>
+  <hr class="my-4">
+<form method="POST"> {% csrf_token %}
+  <input type="submit" class="btn btn-danger btn-lg" href="#" role="button" value="I understand the risk">
+  <a class="btn btn-primary btn-lg" href="{% url 'books:author_detail' object.pk %}" role="button">Take me back</a>
+</form>
+
+</div>
+{% endblock content %}
