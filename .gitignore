@@ -144,3 +144,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+static_cdn
+media_cdn
