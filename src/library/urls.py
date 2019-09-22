@@ -21,7 +21,7 @@ from django.contrib.auth import views as auth_views
 from django.views.generic import RedirectView, TemplateView
 from accounts import views
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('t/books/', include(('books.urls', 'books'), namespace='books')),
     path('t/reviews/', include(('reviews.urls', 'reviews'), namespace='reviews')),
 
