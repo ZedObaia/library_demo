@@ -48,7 +48,7 @@ Book
         {% endfor %}
         {% endif %}
         <br><br>
-        <h4>{{reviews.count}} Reviews:</h4>
+        <h4>{{review_count}} Reviews:</h4>
         <div class="card-footer">
             {% if newReview %}
             <form method="post">{% csrf_token %}

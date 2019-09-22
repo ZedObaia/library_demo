@@ -164,6 +164,8 @@ class BookDetail(generic.DetailView):
         else:
             context["form"] = ReviewForm()
             context['newReview'] = True
+        context['review_count'] = Review.objects.filter(
+            book=self.get_object()).count()
         return context
 
     # add or update the user's review for the current book
