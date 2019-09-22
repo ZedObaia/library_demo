@@ -4,17 +4,24 @@
       <v-flex xs10 sm10 md10 lg10>
         <v-card>
           <v-img v-if="book.cover" contain height="800" :src="book.cover"></v-img>
-          <v-img v-else height="800" contain src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"></v-img>
+          <v-img v-else height="800" contain src="https://picsum.photos/288/434/"></v-img>
           <v-card-title primary-title>
             <h2>{{book.title}}</h2>
           </v-card-title>
           <v-card-title>
             <h3 style="color:orange">Category : {{book.category.name}}</h3>
+            <v-spacer></v-spacer>
+            <div v-if="$user.get().role !=='guest'">
+              <v-btn color="warning" text v-if="book_read" @click="toggle_read">
+                <v-icon>mdi-read</v-icon>Mark Unread
+              </v-btn>
+              <v-btn color="success" text v-else @click="toggle_read">
+                <v-icon>mdi-check</v-icon>Mark Read
+              </v-btn>
+            </div>
           </v-card-title>
           <br />
-          <v-card-text>
-            {{book.description}}
-          </v-card-text>
+          <v-card-text>{{book.description}}</v-card-text>
           <v-card-title primary-title>Reviews : {{reviews_count}}</v-card-title>
           <v-card-text>
             <v-layout row wrap justify-center>
@@ -40,7 +47,10 @@
                 <v-list-item two-line v-for="(review, index) in reviews" :key="index">
                   <v-list-item-content>
                     <v-list-item-title>{{review.text}}</v-list-item-title>
-                    <v-list-item-subtitle>{{review.timestamp | moment("from", "now")}}</v-list-item-subtitle>
+                    <v-list-item-subtitle>
+                      {{review.timestamp | moment("from", "now")}} by
+                      <i>{{review.user}}</i>
+                    </v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-flex>
@@ -68,7 +78,8 @@ export default {
       new_review: {},
       reviews: [],
       reviews_count: 0,
-      disable_review: true
+      disable_review: true,
+      book_read: false
     };
   },
   methods: {
@@ -99,7 +110,8 @@ export default {
               this.reviews.push({
                 id: res.data[index].id,
                 text: res.data[index].text,
-                timestamp: res.data[index].timestamp
+                timestamp: res.data[index].timestamp,
+                user: res.data[index].user.username
               });
             }
           }
@@ -175,11 +187,42 @@ export default {
         .catch(err => {
           console.error(err);
         });
+    },
+    getReadStatus: function() {
+      if (this.$user.get().role !== "guest") {
+        let endpoint = `api/books/${this.$route.params.id}/read/`;
+        axios
+          .get(endpoint)
+          .then(res => {
+            this.book_read = res.data.read;
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      }
+    },
+    toggle_read: function() {
+      let endpoint = `api/books/${this.$route.params.id}/read/`;
+      let csrf_token = Cookies.get("csrftoken");
+      let config = {
+        headers: {
+          "X-CSRFToken": csrf_token
+        }
+      };
+      axios
+        .post(endpoint, {}, config)
+        .then(res => {
+          this.getReadStatus();
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   },
   mounted() {
     this.getCurrentBook();
     this.getBookReviews();
+    this.getReadStatus();
   }
 };
 </script>

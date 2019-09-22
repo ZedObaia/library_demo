@@ -28,7 +28,7 @@
             class="white--text link-img"
             height="600px"
             contain
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+            src="https://picsum.photos/288/434/"
             @click="$router.push({ path: `/books/${book.id}`})"
           ></v-img>
           <v-card-title primary-title>{{book.title}}</v-card-title>

@@ -19,32 +19,50 @@ let router = new Router({
         {
             path: '/books',
             name: 'books',
-            component: Books
+            component: Books,
+            meta: {
+                title: 'Book'
+            }
         },
         {
             path: '/books/:id',
             name: 'bookDetail',
-            component: BookDetail
+            component: BookDetail,
+            meta: {
+                title: 'Book | Details'
+            }
         },
         {
             path: '/category',
             name: 'category',
-            component: Category
+            component: Category,
+            meta: {
+                title: 'Category'
+            }
         },
         {
             path: '/category/:id',
             name: 'CategoryDetail',
-            component: CategoryDetail
+            component: CategoryDetail,
+            meta: {
+                title: 'Category | Details'
+            }
         },
         {
             path: '/author',
             name: 'Authors',
-            component: Author
+            component: Author,
+            meta: {
+                title: 'Author'
+            }
         },
         {
             path: '/author/:id',
             name: 'AuthorDetail',
-            component: AuthorDetail
+            component: AuthorDetail,
+            meta: {
+                title: 'Author | Details'
+            }
         },
         {
             path: '/',

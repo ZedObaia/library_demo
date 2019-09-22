@@ -7,7 +7,7 @@ import axios from 'axios'
 import BootstrapVue from 'bootstrap-vue'
 import VueRouterUserRoles from "vue-router-user-roles";
 axios.defaults.baseURL = 'http://52.30.196.202/'
-    // axios.defaults.baseURL = 'http://localhost/'
+    // axios.defaults.baseURL = 'http://localhost:8000/'
 
 Vue.config.productionTip = false
 

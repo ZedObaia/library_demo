@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% block title %}Author{% endblock title %}
 {% block content %}
 {% if request.user.is_staff %}
 <a class="btn btn-lg btn-primary" href="{% url 'books:author_add' %}">Add Author</a>

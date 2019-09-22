@@ -175,6 +175,17 @@ class BookToggleRead(generics.views.APIView):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.SessionAuthentication]
 
+    def get(self, *args, **kwargs):
+        book_id = self.kwargs.get('pk')
+        book = get_object_or_404(Book, pk=book_id)
+
+        qs = self.request.user.my_books.filter(id=book_id)
+        if qs.exists():
+            return Response({'read': True})
+        else:
+            return Response({'read': False})
+        return BookReadSerializer(book)
+
     def post(self, *args, **kwargs):
         book_id = self.kwargs.get('pk')
         book = get_object_or_404(Book, pk=book_id)
@@ -184,4 +195,4 @@ class BookToggleRead(generics.views.APIView):
             self.request.user.my_books.remove(book)
         else:
             self.request.user.my_books.add(book)
-        return BookReadSerializer(book)
+        return Response(BookReadSerializer(book).data)
