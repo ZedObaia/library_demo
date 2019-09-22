@@ -32,7 +32,7 @@ class BookListCreate(generics.ListCreateAPIView):
             return BookReadSerializer
         else:
             return BookWriteSerializer
-    
+
     # only return the read books if the 'mine' filter is applied
     def get_queryset(self, *args, **kwargs):
         if self.request.GET.get('mine') == 'true' and self.request.user.is_authenticated:
@@ -165,3 +165,23 @@ class BookReviewListCreate(generics.ListCreateAPIView):
         book = get_object_or_404(Book, pk=book_id)
         # save the current user and book on the review instance
         s = serializer.save(user=self.request.user, book=book)
+
+
+class BookToggleRead(generics.views.APIView):
+    """
+        Toogle book read status for the current user
+        Author : Zeyad Obaia
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.SessionAuthentication]
+
+    def post(self, *args, **kwargs):
+        book_id = self.kwargs.get('pk')
+        book = get_object_or_404(Book, pk=book_id)
+
+        qs = self.request.user.my_books.filter(id=book_id)
+        if qs.exists():
+            self.request.user.my_books.remove(book)
+        else:
+            self.request.user.my_books.add(book)
+        return BookReadSerializer(book)
