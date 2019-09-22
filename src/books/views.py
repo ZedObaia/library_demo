@@ -8,21 +8,33 @@ from reviews.forms import ReviewForm
 
 from .models import Author, Book, Category
 from django.contrib import messages
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Category Curd
 
 
 class CategoryList(generic.ListView):
+    """
+        Category List
+        Author : Zeyad Obaia
+    """
     model = Category
     template_name = 'categories/category_list.html'
 
 
 class CategoryDetail(generic.DetailView):
+    """
+        Category Detail
+        Author : Zeyad Obaia
+    """
     model = Category
     template_name = 'categories/category_detail.html'
 
 
 class CategoryCreate(StaffRequiredMixin, generic.CreateView):
+    """
+        Category Create
+        Author : Zeyad Obaia
+    """
     model = Category
     fields = ['name', 'description']
     success_url = reverse_lazy('books:category_list')
@@ -30,6 +42,10 @@ class CategoryCreate(StaffRequiredMixin, generic.CreateView):
 
 
 class CategoryUpdate(StaffRequiredMixin, generic.UpdateView):
+    """
+        Category Update
+        Author : Zeyad Obaia
+    """
     model = Category
     fields = ['name', 'description']
     success_url = reverse_lazy('books:category_list')
@@ -37,6 +53,10 @@ class CategoryUpdate(StaffRequiredMixin, generic.UpdateView):
 
 
 class CategoryDelete(generic.DeleteView):
+    """
+        Category Delete
+        Author : Zeyad Obaia
+    """
     model = Category
     success_url = reverse_lazy('books:category_list')
     template_name = 'categories/category_confirm_delete.html'
@@ -45,16 +65,28 @@ class CategoryDelete(generic.DeleteView):
 # Author CRUD
 
 class AuthorList(generic.ListView):
+    """
+        Author List
+        Author : Zeyad Obaia
+    """
     model = Author
     template_name = 'authors/author_list.html'
 
 
 class AuthorDetail(generic.DetailView):
+    """
+        Author Detail
+        Author : Zeyad Obaia
+    """
     model = Author
     template_name = 'authors/author_detail.html'
 
 
 class AuthorCreate(StaffRequiredMixin, generic.CreateView):
+    """
+        Author Create
+        Author : Zeyad Obaia
+    """
     model = Author
     fields = ['first_name', 'last_name', 'bio']
     success_url = reverse_lazy('books:author_list')
@@ -62,6 +94,10 @@ class AuthorCreate(StaffRequiredMixin, generic.CreateView):
 
 
 class AuthorUpdate(StaffRequiredMixin, generic.UpdateView):
+    """
+        Author Update
+        Author : Zeyad Obaia
+    """
     model = Author
     fields = ['first_name', 'last_name', 'bio']
     success_url = reverse_lazy('books:author_list')
@@ -69,6 +105,10 @@ class AuthorUpdate(StaffRequiredMixin, generic.UpdateView):
 
 
 class AuthorDelete(generic.DeleteView):
+    """
+        Author Delete
+        Author : Zeyad Obaia
+    """
     model = Author
     success_url = reverse_lazy('books:author_list')
     template_name = 'authors/author_confirm_delete.html'
@@ -76,9 +116,14 @@ class AuthorDelete(generic.DeleteView):
 
 # Book CRUD
 class BookList(generic.ListView):
+    """
+        Book List
+        Author : Zeyad Obaia
+    """
     model = Book
 
     def get_queryset(self, *args, **kwargs):
+        # Return all books if the 'mine' filter is not applied, else return the read books only
         qs = Book.objects.all()
         if self.request.user.is_authenticated and self.request.GET.get('mine') == "true":
             return self.request.user.my_books.all()
@@ -86,9 +131,14 @@ class BookList(generic.ListView):
 
 
 class BookDetail(generic.DetailView):
+    """
+        Book Detail
+        Author : Zeyad Obaia
+    """
     model = Book
 
     def get_context_data(self, **kwargs):
+        # return the user review if it exists, and return all other reviews
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             # my reviews for this book
@@ -107,6 +157,7 @@ class BookDetail(generic.DetailView):
                 book=self.get_object()).order_by('-timestamp')
             context['mine'] = mine
 
+        # return add or edit review form in the context
         if mine:
             context["form"] = ReviewForm(instance=mine.first())
             context['newReview'] = False
@@ -115,6 +166,7 @@ class BookDetail(generic.DetailView):
             context['newReview'] = True
         return context
 
+    # add or update the user's review for the current book
     def post(self, *args, **kwargs):
         qs = Review.objects.filter(
             user=self.request.user, book=self.get_object())
@@ -131,7 +183,11 @@ class BookDetail(generic.DetailView):
         return redirect('books:book_detail', self.get_object().id)
 
 
-class BookCreate(generic.CreateView):
+class BookCreate(StaffRequiredMixin, generic.CreateView):
+    """
+        Book Create
+        Author : Zeyad Obaia
+    """
     model = Book
     fields = ['title', 'description', 'cover',
               'publication_date', 'category', 'authors']
@@ -139,13 +195,21 @@ class BookCreate(generic.CreateView):
 
 
 class BookUpdate(StaffRequiredMixin, generic.UpdateView):
+    """
+        Book Update
+        Author : Zeyad Obaia
+    """
     model = Book
     fields = ['title', 'description', 'cover',
               'publication_date', 'category', 'authors']
     success_url = reverse_lazy('books:book_list')
 
 
-class BookToggleRead(generic.UpdateView):
+class BookToggleRead(LoginRequiredMixin, generic.UpdateView):
+    """
+        Book Toggle book read status for the current logged-in user
+        Author : Zeyad Obaia
+    """
     model = Book
 
     def post(self, *args, **kwargs):
@@ -160,6 +224,10 @@ class BookToggleRead(generic.UpdateView):
         return redirect('books:book_detail', self.get_object().id)
 
 
-class BookDelete(generic.DeleteView):
+class BookDelete(StaffRequiredMixin, generic.DeleteView):
+    """
+        Book Delete
+        Author : Zeyad Obaia
+    """
     model = Book
     success_url = reverse_lazy('books:book_list')

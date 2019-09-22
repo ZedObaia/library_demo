@@ -6,6 +6,10 @@ User = get_user_model()
 
 
 class Category(models.Model):
+    """
+        Category model
+        Author : Zeyad Obaia
+    """
     name = models.CharField(max_length=255, verbose_name=_('Category Name'))
     description = models.TextField(
         null=True, blank=True, verbose_name=_('Category Description'))
@@ -15,6 +19,10 @@ class Category(models.Model):
 
 
 class Book(models.Model):
+    """
+        Book model
+        Author : Zeyad Obaia
+    """
     title = models.CharField(max_length=255, verbose_name=_('Book Title'))
     description = models.TextField(
         null=True, blank=True, verbose_name=_('Book Description'))
@@ -38,6 +46,10 @@ class Book(models.Model):
     
 
 class Author(models.Model):
+    """
+        Author model
+        Author : Zeyad Obaia
+    """
     first_name = models.CharField(
         max_length=255, verbose_name=_('Author First Name'))
     last_name = models.CharField(
